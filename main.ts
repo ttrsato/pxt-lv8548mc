@@ -52,7 +52,7 @@ namespace lv8548mc {
     //% ch.defl=Motor.CH1
     //% out1.defl=AnalogPin.P13
     //% out2.defl=AnalogPin.P14
-    //% drv_mode1.defl=DriveMode.DRV_OPEN
+    //% drv_mode.defl=DriveMode.DRV_OPEN
     export function dcSetMotor(ch: Motor, out1: AnalogPin, out2: AnalogPin, drv_mode: DriveMode): void {
         if (ch == Motor.CH1) {
             drv1 = drv_mode
@@ -109,7 +109,7 @@ namespace lv8548mc {
 
     //% blockId=dc_set_dir block="Set motor %ch|direction %dir"
     //% ch.defl=Motor.CH1
-    //% dir.defl=Direction.DIR_CW
+    //% dir.defl=RotationalDir.DIR_CW
     export function dcSetDir(ch: Motor, dir: RotationalDir.DIR_CW): void {
         if (ch == Motor.CH1) {
             dir1 = dir
