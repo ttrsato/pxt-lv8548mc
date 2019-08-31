@@ -145,7 +145,7 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=dc_stop_motor block="Stop DC motor %ch with %state"
+    //% blockId=dc_stop_motor block="STOP DC motor %ch with %state"
     //% ch.defl=Motor.CH1
     //% state.defl=StopState.STOP_OPEN
     export function dcStopMotor(ch: Motor, state: StopState): void {
