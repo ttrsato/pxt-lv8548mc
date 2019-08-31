@@ -107,7 +107,7 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=dc_set_dir block="Set motor %ch|direction %dir"
+    //% blockId=dc_set_dir block="Set DC motor %ch|direction %dir"
     //% ch.defl=Motor.CH1
     //% dir.defl=RotationalDir.DIR_CW
     export function dcSetDir(ch: Motor, dir: RotationalDir): void {
@@ -119,12 +119,12 @@ namespace lv8548mc {
         dcSetMotor(ch, dc_out1, dc_out2, drv1)
     }
 
-    //% blockId=dc_set_speed block="RUN motor %ch|speed %speed"
+    //% blockId=dc_set_speed block="RUN DC motor %ch with %speed"
     //% ch.defl=Motor.CH1
-    //% speed.min=0 speed.max=1023
+    //% speed.min=0 speed.max=100
     export function dcSetSpeed(ch: Motor, speed: number): void {
         if (ch == Motor.CH1) {
-            speed1 = speed
+            speed1 = (speed * 1023) / 100
             let tmp_duty = 0
             if (drv1 == DriveMode.DRV_OPEN) {
                 tmp_duty = speed1
@@ -133,7 +133,7 @@ namespace lv8548mc {
             }
             pins.analogWritePin(dc1_pwm, tmp_duty)
         } else {
-            speed2 = speed
+            speed2 = (speed * 1023) / 100
             let tmp_duty = 0
             if (drv2 == DriveMode.DRV_OPEN) {
                 tmp_duty = speed2
@@ -144,7 +144,7 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=dc_stop_motor block="Stop %ch motor with %state"
+    //% blockId=dc_stop_motor block="Stop DC motor %ch with %state"
     //% ch.defl=Motor.CH1
     //% state.defl=StopState.STOP_OPEN
     export function dcStopMotor(ch: Motor, state: StopState): void {
