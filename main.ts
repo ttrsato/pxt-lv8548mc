@@ -107,7 +107,7 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=dc_set_dir block="Set DC motor %ch|direction %dir"
+    //% blockId=dc_set_dir block="Set DC motor %ch|direction to %dir"
     //% ch.defl=Motor.CH1
     //% dir.defl=RotationalDir.DIR_CW
     export function dcSetDir(ch: Motor, dir: RotationalDir): void {
@@ -119,7 +119,7 @@ namespace lv8548mc {
         dcSetMotor(ch, dc_out1, dc_out2, drv1)
     }
 
-    //% blockId=dc_set_speed block="RUN DC motor %ch with %speed"
+    //% blockId=dc_set_speed block="RUN DC motor %ch seed to %speed"
     //% ch.defl=Motor.CH1
     //% speed.min=0 speed.max=100
     export function dcSetSpeed(ch: Motor, speed: number): void {
