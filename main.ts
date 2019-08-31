@@ -113,10 +113,11 @@ namespace lv8548mc {
     export function dcSetDir(ch: Motor, dir: RotationalDir): void {
         if (ch == Motor.CH1) {
             dir1 = dir
+            dcSetMotor(ch, dc_out1, dc_out2, drv1)
         } else {
             dir2 = dir
+            dcSetMotor(ch, dc_out3, dc_out4, drv2)
         }
-        dcSetMotor(ch, dc_out1, dc_out2, drv1)
     }
 
     //% blockId=dc_set_speed block="RUN DC motor %ch seed to %speed"
