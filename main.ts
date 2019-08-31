@@ -48,7 +48,7 @@ namespace lv8548mc {
     let speed1 = 0
     let speed2 = 0
 
-    //% blockId=dc_set_motor block="Set DC %ch1 OUT1 to %out1|OUT2 to %out2|DriveMode %drv_mode"
+    //% blockId=dc_set_motor block="Set DC Motor %ch1 OUT1 to %out1|OUT2 to %out2|DriveMode %drv_mode"
     //% ch.defl=Motor.CH1
     //% out1.defl=AnalogPin.P13
     //% out2.defl=AnalogPin.P14
@@ -110,7 +110,7 @@ namespace lv8548mc {
     //% blockId=dc_set_dir block="Set motor %ch|direction %dir"
     //% ch.defl=Motor.CH1
     //% dir.defl=RotationalDir.DIR_CW
-    export function dcSetDir(ch: Motor, dir: RotationalDir.DIR_CW): void {
+    export function dcSetDir(ch: Motor, dir: RotationalDir): void {
         if (ch == Motor.CH1) {
             dir1 = dir
         } else {
@@ -147,7 +147,7 @@ namespace lv8548mc {
     //% blockId=dc_stop_motor block="Stop %ch motor with %state"
     //% ch.defl=Motor.CH1
     //% state.defl=StopState.STOP_OPEN
-    export function dcStopMotor(ch: Motor, state: StopState.STOP_OPEN): void {
+    export function dcStopMotor(ch: Motor, state: StopState): void {
         let pwm = dc1_pwm
         let fix = dc1_fix
         if (ch == Motor.CH2) {
