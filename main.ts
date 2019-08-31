@@ -48,12 +48,12 @@ namespace lv8548mc {
     let speed1 = 0
     let speed2 = 0
 
-    //% blockId=show_strings block="Set DC %ch1 OUT1 to %out1|OUT2 to %out2|DriveMode to %drv_mode"
+    //% blockId=dc_set_motor block="Set DC %ch1 OUT1 to %out1|OUT2 to %out2|DriveMode %drv_mode"
     //% ch.defl=Motor.CH1
     //% out1.defl=AnalogPin.P13
     //% out2.defl=AnalogPin.P14
     //% drv_mode1.defl=DriveMode.DRV_OPEN
-    export function setDC(ch: Motor, out1: AnalogPin, out2: AnalogPin, drv_mode: DriveMode): void {
+    export function dcSetMotor(ch: Motor, out1: AnalogPin, out2: AnalogPin, drv_mode: DriveMode): void {
         if (ch == Motor.CH1) {
             drv1 = drv_mode
             dc_out1 = out1
@@ -107,22 +107,22 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=show_strings block="Set motor %ch|direction %dir"
+    //% blockId=dc_set_dir block="Set motor %ch|direction %dir"
     //% ch.defl=Motor.CH1
     //% dir.defl=Direction.DIR_CW
-    export function setDirDC(ch: Motor, dir: RotationalDir.DIR_CW): void {
+    export function dcSetDir(ch: Motor, dir: RotationalDir.DIR_CW): void {
         if (ch == Motor.CH1) {
             dir1 = dir
         } else {
             dir2 = dir
         }
-        setDC(ch, dc_out1, dc_out2, drv1)
+        dcSetMotor(ch, dc_out1, dc_out2, drv1)
     }
 
-    //% blockId=show_strings block="RUN motor %ch|speed %speed"
+    //% blockId=dc_set_speed block="RUN motor %ch|speed %speed"
     //% ch.defl=Motor.CH1
     //% speed.min=0 speed.max=1023
-    export function setSpeedDC(ch: Motor, speed: number): void {
+    export function dcSetSpeed(ch: Motor, speed: number): void {
         if (ch == Motor.CH1) {
             speed1 = speed
             let tmp_duty = 0
@@ -144,10 +144,10 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=show_strings block="Stop %ch motor with %state"
+    //% blockId=dc_stop_motor block="Stop %ch motor with %state"
     //% ch.defl=Motor.CH1
     //% state.defl=StopState.STOP_OPEN
-    export function stopDC(ch: Motor, state: StopState.STOP_OPEN): void {
+    export function dcStopMotor(ch: Motor, state: StopState.STOP_OPEN): void {
         let pwm = dc1_pwm
         let fix = dc1_fix
         if (ch == Motor.CH2) {
