@@ -7,25 +7,26 @@ Currently this package suports DC motor only.
 
 ## Blocks
 
-* Initial block
+* Initial block:
 Assign motor pins (OUT1 and OUT2) and PWM drive mode (Open / Brake).
-* Direction block
+* Direction block:
 Set direction of rotation.
-* Speed block
+* Speed block:
 Set speed (duty)
-* Stop block
+* Stop block:
 Stop motor with Open or Brake mode.
 
 ## Install
 Click Advanced and Extensions tab. Then enter https://github.com/ttrsato/pxt-lv8548mc.git to find this package.
+Then click lv8548mc.
 
 ## Licence
 
-[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
+[MIT](https://github.com/ttrsato/pxt-lv8548mc/blob/master/LICENSE)
 
 ## Author
 
-[tcnksm](https://github.com/ttrsato)
+[Tatsuro Sato](https://github.com/ttrsato/)
 
 ## Supported targets
 
