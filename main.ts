@@ -26,12 +26,12 @@ enum RotationalDir {
 
 //% weight=70 icon="\uf2db" color=#555555 block="LV8548MC"
 namespace lv8548mc {
-    let dc_out1 = AnalogPin.P13
-    let dc_out2 = AnalogPin.P14
+    let dc_out1 = AnalogPin.P0
+    let dc_out2 = AnalogPin.P1
     let dc_out3 = AnalogPin.P15
     let dc_out4 = AnalogPin.P16
 
-    let dc1_pwm = AnalogPin.P13
+    let dc1_pwm = AnalogPin.P0
     let dc1_fix = AnalogPin.P14
     let dc2_pwm = AnalogPin.P15
     let dc2_fix = AnalogPin.P16
