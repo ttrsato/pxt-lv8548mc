@@ -1,6 +1,7 @@
 # pxt-lv8548mc
 
-
+micro:bit extention package for ON Semiconductor motor driver IC LV8548MC.
+LV8548MC can drive 4~12V DC x2 or Stepper x1 (MAX 1A).
 
 ## TODO
 
@@ -17,6 +18,7 @@ Read more at https://makecode.microbit.org/extensions
 ## Blocks
 
 
+## Demo
 
 ## License
 
