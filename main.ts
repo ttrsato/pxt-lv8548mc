@@ -24,7 +24,7 @@ enum RotationalDir {
     DIR_CCW = 1,
 }
 
-//% weight=70 icon="\uf2db" color=#555555 block="LV8548MC"
+//% weight=70 icon="\uf2db" color=#3cb371 block="LV8548MC"
 namespace lv8548mc {
     let dc_out1 = AnalogPin.P0
     let dc_out2 = AnalogPin.P1
