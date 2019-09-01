@@ -1,6 +1,6 @@
 {
     "name": "pxt-lv8548mc",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "",
     "dependencies": {
         "core": "*",
