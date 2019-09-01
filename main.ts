@@ -48,7 +48,7 @@ namespace lv8548mc {
     let speed1 = 0
     let speed2 = 0
 
-    //% blockId=dc_set_motor block="Set DC Motor %ch1 OUT1 to %out1|OUT2 to %out2|DriveMode %drv_mode"
+    //% blockId=dc_set_motor block="Set DC Motor %ch1 OUT1/3 to %out1|OUT2/4 to %out2|DriveMode %drv_mode"
     //% ch.defl=Motor.CH1
     //% out1.defl=AnalogPin.P13
     //% out2.defl=AnalogPin.P14
