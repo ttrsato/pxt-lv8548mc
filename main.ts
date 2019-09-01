@@ -50,8 +50,8 @@ namespace lv8548mc {
 
     //% blockId=dc_set_motor block="Set DC Motor %ch1 IN1/3 to %out1|IN2/4 to %out2|DriveMode %drv_mode"
     //% ch.defl=Motor.CH1
-    //% out1.defl=AnalogPin.P13
-    //% out2.defl=AnalogPin.P14
+    //% out1.defl=AnalogPin.P0
+    //% out2.defl=AnalogPin.P1
     //% drv_mode.defl=DriveMode.DRV_OPEN
     export function dcSetMotor(ch: Motor, out1: AnalogPin, out2: AnalogPin, drv_mode: DriveMode): void {
         if (ch == Motor.CH1) {
