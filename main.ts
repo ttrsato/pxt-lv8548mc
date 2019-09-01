@@ -120,7 +120,7 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=dc_set_speed block="RUN DC motor %ch speed to %speed"
+    //% blockId=dc_set_speed block="RUN DC motor %ch duty to %speed"
     //% ch.defl=Motor.CH1
     //% speed.min=0 speed.max=100
     export function dcSetSpeed(ch: Motor, speed: number): void {
