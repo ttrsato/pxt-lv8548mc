@@ -69,6 +69,8 @@ namespace lv8548mc {
     let step_phase = 0
     let step_phase_num = 4
 
+    let step_run = 0
+
     let pat_1_1 = [
         [0, 0],
         [1, 0],
@@ -87,7 +89,7 @@ namespace lv8548mc {
         [0, 0, 0, 1]
     ];
 
-    //% blockId=dc_set_motor block="D: set motor %ch IN1/3 to %out1|IN2/4 to %out2|DriveMode %drv_mode"
+    //% blockId=dc_set_motor block="D: set motor  %ch|IN1/3 to      %out1|IN2/4 to      %out2|drive mode    %drv_mode"
     //% group="DC"
     //% ch.defl=Motor.CH1
     //% out1.defl=AnalogPin.P0
@@ -147,11 +149,11 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=dc_set_dir block="D: set motor %ch |direction to %dir"
+    //% blockId=dc_set_dir block="D: set  motor %ch |direction to %dir"
     //% group="DC"
     //% ch.defl=Motor.CH1
     //% dir.defl=RotationalDir.DIR_CW
-    export function dcSetDir(ch: Motor, dir: RotationalDir): void {
+    function dcSetDir(ch: Motor, dir: RotationalDir): void {
         if (ch == Motor.CH1) {
             dir1 = dir
             dcSetMotor(ch, dc_out1, dc_out2, drv1)
@@ -161,11 +163,12 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=dc_set_speed block="D: run motor %ch at %speed \\%"
+    //% blockId=dc_set_speed block="D: run  motor %ch %d at %speed \\%"
     //% group="DC"
     //% ch.defl=Motor.CH1
     //% speed.min=0 speed.max=100
-    export function dcSetSpeed(ch: Motor, speed: number): void {
+    export function dcSetSpeed(ch: Motor, dir: RotationalDir, speed: number): void {
+        dcSetDir(ch, dir)
         if (ch == Motor.CH1) {
             speed1 = (speed * 1023) / 100
             let tmp_duty = 0
@@ -207,13 +210,15 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=step_set_motor block="S: set stepper |IN1 to %out1|IN2 to %out2|IN3 to %out3|IN4 to %out4|Ext %drv_mode"
+    // STEPPER /////////////////////////////////////////////////
+
+    //% blockId=step_set_motor block="S: set  stepper |IN1:A  to  %out1|IN2:A' to  %out2|IN3:B  to  %out3|IN4:B' to  %out4|Excitation %drv_mode"
     //% group="STEPPER"
     //% out1.defl=DigitalPin.P13
     //% out2.defl=DigitalPin.P14
     //% out3.defl=DigitalPin.P15
     //% out4.defl=DigitalPin.P16
-    //% drv_mode = StepDriveMode.STP_DRV_1_1
+    //% drv_mode.defl=StepDriveMode.STP_DRV_1_1
     export function stepSetMotor(
         out1: DigitalPin, out2: DigitalPin, out3: DigitalPin, out4: DigitalPin,
         drv_mode: StepDriveMode): void {
@@ -241,19 +246,22 @@ namespace lv8548mc {
         }
     }
 
-    //% blockId=step_rotate_motor block="S: run stepper |%steps steps|%msps ms/step"
+    //% blockId=step_rotate_motor block="S: run  stepper %dir %steps steps %msps ms/step"
     //% group="STEPPER"
+    //% dir=RotationalDir.DIR_CW
     //% steps.defl=10
+    //% steps.min=1
     //% msps.defl=100
     //% msps.min=1 msps.max=1000
-    export function stepRotateMotor(steps: number, msps: number) {
+    //% msps.shadow=timePicker
+    export function stepRotateMotor(dir: RotationalDir, steps: number, msps: number) {
+        if (step_run) return
+        step_run = 1
         if (step_state == StepStopState.STOP_FREE) {
             stepStopMotor(StepStopState.STOP_HOLD)
-            basic.pause(msps)
         }
-        let abs_steps = Math.abs(steps)
-        let inc = (steps >= 0) ? 1 : -1
-        for (let i = 0; i < abs_steps; i++) {
+        let inc = (dir == RotationalDir.DIR_CW) ? 1 : -1
+        for (let i = 0; i < steps; i++) {
             step_phase += inc
             if (step_phase == step_phase_num) {
                 step_phase = 0
@@ -263,70 +271,7 @@ namespace lv8548mc {
             setStepPins(step_phase)
             basic.pause(msps)
         }
-    }
-
-    //% blockId=step_rotate_motor_acc block="S: run stepper acceleration |%steps steps|from %f_msps ms/steps|to %t_msps ms/steps"
-    //% group="STEPPER"
-    //% steps.defl=10
-    //% f_msps.defl=200
-    //% t_msps.defl=50
-    export function stepRotateMotorAcc(steps: number, f_msps: number, t_msps: number) {
-        let abs_steps = Math.abs(steps)
-        let dmsps = (t_msps - f_msps) / abs_steps
-        let cmsps = f_msps
-        if (step_state == StepStopState.STOP_FREE) {
-            stepStopMotor(StepStopState.STOP_HOLD)
-            basic.pause(cmsps)
-        }
-        let inc = (steps >= 0) ? 1 : -1
-        for (let i = 0; i < abs_steps; i++) {
-            step_phase += inc
-            if (step_phase == step_phase_num) {
-                step_phase = 0
-            } else if (step_phase == -1) {
-                step_phase = step_phase_num - 1
-            }
-            setStepPins(step_phase)
-            basic.pause(cmsps)
-            cmsps += dmsps
-            if (dmsps > 0 && cmsps > t_msps) {
-                cmsps = t_msps
-            } else if (dmsps < 0 && cmsps < t_msps) {
-                cmsps = t_msps
-            }
-        }
-    }
-
-    //% blockId=step_rotate_motor_trap block="S: run stepper trapezoidal|Total steps %ca_steps Total ms %ta_ms Acc ms %t1_ms Start ms/steps %s_msps"
-    //% group="STEPPER"
-    //% ca_steps.defl=96
-    //% ta_ms.shadow=timePicker
-    //% ta_ms.defl=2000
-    //% t1_ms.shadow=timePicker
-    //% t1_ms.defl=500
-    //% s1_msps.defl=100
-    export function stepRotateMotorTrap(ca_steps: number, ta_ms: number, t1_ms: number, s1_msps: number) {
-        if (ca_steps < 2) {
-            return
-        }
-        let t2_ms = ta_ms - t1_ms * 2
-        let a = ca_steps - 2
-        let b = ca_steps * s1_msps - 4 * t1_ms - t2_ms
-        let c = -t2_ms * s1_msps
-        let d = Math.sqrt(b * b - 4 * a * c)
-        let s2_msps = (-b + d) / 2 / a
-        if (s2_msps < 0) {
-            s2_msps = (-b - d) / 2 / a
-        }
-        if (s2_msps < 0) {
-            s2_msps = s1_msps
-        }
-        let c2_steps = Math.round(t2_ms / s2_msps)
-        let c1_steps = Math.round((ca_steps - c2_steps) / 2)
-        c2_steps = ca_steps - c1_steps * 2
-        stepRotateMotorAcc(c1_steps, s1_msps, s2_msps)
-        stepRotateMotor(c2_steps, s2_msps)
-        stepRotateMotorAcc(c1_steps, s2_msps, s1_msps)
+        step_run = 0
     }
 
     //% blockId=step_stop_motor block="S: stop stepper %stat"
@@ -345,6 +290,87 @@ namespace lv8548mc {
             pins.digitalWritePin(step_o3, pat_1_2[step_phase][2])
             pins.digitalWritePin(step_o4, pat_1_2[step_phase][3])
         }
+    }
+
+    //% blockId=step_rotate_motor_acc block="S: run  stepper accel|dirction      %dir|steps         %steps|start ms/step %f_msps|end   ms/step %t_msps"
+    //% group="STEPPER"
+    //% steps.defl=96
+    //% f_msps.defl=50
+    //% f_msps.shadow=timePicker
+    //% t_msps.defl=2
+    //% t_msps.shadow=timePicker
+    export function stepRotateMotorAcc(dir: RotationalDir, steps: number, f_msps: number, t_msps: number) {
+        if (step_run) return
+        step_run = 1
+        //let abs_steps = Math.abs(steps)
+        let dmsps = (t_msps - f_msps) / steps
+        let cmsps = f_msps
+        if (step_state == StepStopState.STOP_FREE) {
+            stepStopMotor(StepStopState.STOP_HOLD)
+            // basic.pause(cmsps)
+        }
+        let inc = (dir == RotationalDir.DIR_CW) ? 1 : -1
+        for (let i = 0; i < steps; i++) {
+            step_phase += inc
+            if (step_phase == step_phase_num) {
+                step_phase = 0
+            } else if (step_phase == -1) {
+                step_phase = step_phase_num - 1
+            }
+            setStepPins(step_phase)
+            basic.pause(cmsps)
+            cmsps += dmsps
+            if (dmsps > 0 && cmsps > t_msps) {
+                cmsps = t_msps
+            } else if (dmsps < 0 && cmsps < t_msps) {
+                cmsps = t_msps
+            }
+        }
+        step_run = 0
+    }
+
+    //% blockId=step_rotate_motor_trap block="S: run  stepper trap|direction      %dir|total steps    %ca_steps|total ms       %ta_ms|start ms/step  %s_msps|accel ms       %t1_ms"
+    //% group="STEPPER"
+    //% ca_steps.defl=96
+    //% ta_ms.shadow=timePicker
+    //% ta_ms.defl=2000
+    //% t1_ms.shadow=timePicker
+    //% t1_ms.defl=500
+    //% s1_msps.defl=100
+    //% s1_msps.shadow=timePicker
+    export function stepRotateMotorTrap(dir: RotationalDir, ca_steps: number, ta_ms: number, t1_ms: number, s1_msps: number) {
+        if (ca_steps < 2) {
+            return
+        }
+        if (step_run) return
+        step_run = 1
+        let t2_ms = ta_ms - t1_ms * 2
+        let a = ca_steps - 2
+        let b = ca_steps * s1_msps - 4 * t1_ms - t2_ms
+        let c = -t2_ms * s1_msps
+        let d = Math.sqrt(b * b - 4 * a * c)
+        let s2_msps = (-b + d) / 2 / a
+        if (s2_msps < 0) {
+            s2_msps = (-b - d) / 2 / a
+            if (s2_msps < 0) {
+                s2_msps = s1_msps
+            } else if (s2_msps == 0) {
+                s2_msps = 1
+            }
+        }
+        let c2_steps = Math.round(t2_ms / s2_msps)
+        if (c2_steps < 0) {
+            c2_steps = 0
+        }
+        let c1_steps = Math.round((ca_steps - c2_steps) / 2)
+        if (c1_steps < 0) {
+            c1_steps = 0
+        }
+        c2_steps = ca_steps - c1_steps * 2
+        step_run = 0
+        stepRotateMotorAcc(dir, c1_steps, s1_msps, s2_msps)
+        stepRotateMotor(dir, c2_steps, s2_msps)
+        stepRotateMotorAcc(dir, c1_steps, s2_msps, s1_msps)
     }
 
     let degpstep = 7.5
@@ -391,12 +417,6 @@ namespace lv8548mc {
     //% rpm.min=60 rpm.max=60000
     export function rpm2mspstep(rpm: number): number {
         return freq2mspstep(rpm / 60)
-    }
-
-    //% blockId=step_toRound block="S: %param to round"
-    //% group="STEPPER to ms/step"
-    export function toRound(param: number): number {
-        return (param * ((step_drv_mode == StepDriveMode.STP_DRV_1_1 ? 1 : 2) * steppround))
     }
 
     //% blockId=step_rounds2steps block="S: %rounds rounds to steps"
